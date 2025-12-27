@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n8n Popularity Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #ff6d5a; /* n8n color */
+        }
+        .controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #ff6d5a;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        button:hover {
+            background-color: #e04f3d;
+        }
+        #container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+            border-top: 5px solid #ccc;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+        .card.YouTube { border-top-color: #ff0000; }
+        .card.Forum { border-top-color: #00aeef; }
+        .card.Google { border-top-color: #4285f4; }
+        
+        .platform {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            color: #777;
+            margin-bottom: 5px;
+        }
+        .title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin: 0 0 10px 0;
+            line-height: 1.4;
+        }
+        .metrics {
+            font-size: 0.9rem;
+            color: #555;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .score {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #ff6d5a;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>n8n Workflow Popularity Board</h1>
+
+    <div class="controls">
+        <button onclick="fetchWorkflows()">Refresh Data</button>
+    </div>
+
+    <div id="container">Loading...</div>
+
+    <script>
+        async function fetchWorkflows() {
+            const container = document.getElementById('container');
+            container.innerHTML = 'Loading...';
+
+            try {
+                const res = await fetch('/api/workflows');
+                const json = await res.json();
+                
+                container.innerHTML = '';
+                
+                json.data.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = `card ${item.platform}`;
+                    
+                    // Format metrics object nicely
+                    const metricsHtml = Object.entries(item.popularity_metrics)
+                        .map(([k, v]) => `<div><strong>${k}:</strong> ${v}</div>`)
+                        .join('');
+
+                    card.innerHTML = `
+                        <div class="platform">${item.platform} • ${item.country}</div>
+                        <div class="title">${item.workflow}</div>
+                        <div class="metrics">${metricsHtml}</div>
+                        <div class="score">Score: ${Math.round(item.popularity_score).toLocaleString()}</div>
+                        <a href="${item.source_url}" target="_blank">View Source &rarr;</a>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                container.innerHTML = '<p style="text-align:center; color:red">Error loading data.</p>';
+                console.error(err);
+            }
+        }
+
+        // Load on start
+        fetchWorkflows();
+    </script>
+</body>
+</html>
