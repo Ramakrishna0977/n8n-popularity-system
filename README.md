@@ -1,6 +1,5 @@
 # 🚀 n8n Popularity Tracking System
 
-![License](https://img.shields.io/badge/license-ISC-blue.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D18-green.svg)
 ![Status](https://img.shields.io/badge/status-production--ready-brightgreen.svg)
 
@@ -8,7 +7,6 @@ A production-grade analytics system designed to track, rank, and visualize the m
 
 The system aggregates data from **YouTube**, **n8n Community Forum**, and **Google Trends**, calculates a unified "Popularity Score", and serves the insights via a REST API and a visual Dashboard.
 
----
 
 ## 🌟 Features
 
@@ -50,7 +48,7 @@ The system aggregates data from **YouTube**, **n8n Community Forum**, and **Goog
 
 ### 1. Clone & Install
 ```bash
-git clone https://github.com/your-username/n8n-popularity-system.git
+git clone https://github.com/username/n8n-popularity-system.git
 cd n8n-popularity-system
 npm install
 ```
@@ -141,5 +139,3 @@ This system is architected to scale from 50 to **20,000+** records:
 
 ---
 
-## 📄 License
-ISC. Created for the n8n Community.
